@@ -1,13 +1,11 @@
 import json
 
 from flask import Flask, request
-from flask_cors import CORS
-
 import apis.aep_device_status
 import apis.aep_device_command
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+
 body_base = '{ "productId": "15100261", "deviceId": "16749f24ae0e4d118f93b9d9eb2317b5"}'
 
 
