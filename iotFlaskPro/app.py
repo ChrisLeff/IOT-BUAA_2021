@@ -12,7 +12,7 @@ body_base = '{ "productId": "15100261", "deviceId": "16749f24ae0e4d118f93b9d9eb2
 body_motor_control = \
     '{"content": {"params": { "control_int": %s}, "serviceIdentifier": "motor_control" }, ' \
     '"deviceId": "16749f24ae0e4d118f93b9d9eb2317b5", ' \
-    '"operator": "kkkk", ' \
+    '"operator": "BUAA202116", ' \
     '"productId": "15100261", ' \
     '"ttl": 1, ' \
     '"deviceGroupId": null , ' \
