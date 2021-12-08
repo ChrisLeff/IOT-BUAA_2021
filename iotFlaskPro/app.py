@@ -6,17 +6,16 @@ from flask_cors import CORS
 import apis.aep_device_status
 import apis.aep_device_command
 
-
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
-body_base = '{ "productId": "15099182", "deviceId": "78cb35a72bf840b0a6533d31531d8890"}'
+body_base = '{ "productId": "15100261", "deviceId": "16749f24ae0e4d118f93b9d9eb2317b5"}'
 
 
 body_motor_control = \
     '{"content": {"params": { "control_int": %s}, "serviceIdentifier": "motor_control" }, ' \
-    '"deviceId": "78cb35a72bf840b0a6533d31531d8890", ' \
+    '"deviceId": "16749f24ae0e4d118f93b9d9eb2317b5", ' \
     '"operator": "kkkk", ' \
-    '"productId": "15099182", ' \
+    '"productId": "15100261", ' \
     '"ttl": 1, ' \
     '"deviceGroupId": null , ' \
     '"level": 1}'
@@ -29,7 +28,7 @@ def hello_world():  # put application's code here
 
 @app.route('/get_temperature_humidity')
 def get_temperature_humidity():
-    result = apis.aep_device_status.QueryDeviceStatusList('6Dbi6zVTAHc', 'OyB7a81dby', body_base)
+    result = apis.aep_device_status.QueryDeviceStatusList('D4RcZL9S9Sf', 'ifuketHPjc', body_base)
     postForm = json.loads(result)
     return str (postForm['deviceStatusList'])
 
@@ -44,13 +43,13 @@ def get_history_status_page():
         # end_timestamp = input()
         # begin_timestamp = str(1637856052000)
         # end_timestamp =   str(1637942452000)
-        body_history = '{"productId": "15099182",' \
-                       ' "deviceId": "78cb35a72bf840b0a6533d31531d8890",' \
+        body_history = '{"productId": "15100261",' \
+                       ' "deviceId": "16749f24ae0e4d118f93b9d9eb2317b5",' \
                        ' "begin_timestamp":' + begin_timestamp + ',' \
                        ' "end_timestamp":' + end_timestamp + ',' \
                        ' "page_size": 200,' \
                        ' "page_timestamp": null}'
-        result = apis.aep_device_status.getDeviceStatusHisInPage('6Dbi6zVTAHc', 'OyB7a81dby', body_history)
+        result = apis.aep_device_status.getDeviceStatusHisInPage('D4RcZL9S9Sf', 'ifuketHPjc', body_history)
         postForm = json.loads(result)
         time = []
         temperature = []
@@ -69,14 +68,14 @@ def get_history_status_page():
 
 @app.route('/turn_motor_on')
 def turn_motor_on():
-    result = apis.aep_device_command.CreateCommand('6Dbi6zVTAHc', 'OyB7a81dby', 'b8f7794e037644d7a17464c4f3fb0483',
+    result = apis.aep_device_command.CreateCommand('D4RcZL9S9Sf', 'ifuketHPjc', 'da940cf2c7484d59800d982b49ccecdd',
                                                    body_motor_control % "1")
     return result
 
 
 @app.route('/turn_motor_off')
 def turn_motor_off():
-    result = apis.aep_device_command.CreateCommand('6Dbi6zVTAHc', 'OyB7a81dby', 'b8f7794e037644d7a17464c4f3fb0483',
+    result = apis.aep_device_command.CreateCommand('D4RcZL9S9Sf', 'ifuketHPjc', 'da940cf2c7484d59800d982b49ccecdd',
                                                    body_motor_control % "0")
     return result
 
