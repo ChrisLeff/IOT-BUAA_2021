@@ -20,7 +20,7 @@
       湿度阈值:<el-input size="medium" v-model="humidstd" placeholder="请输入内容" style="width:25%"></el-input>
       <p></p>
     </div>
-    <el-link type="primary" href="../../static/index.html">查看折线图</el-link>
+    <el-button type="primary" @click="getWorkData">检测当前数据</el-button> <el-link type="primary" href="../../static/index.html">查看折线图</el-link>
     <el-table :data="showdata" style="width: 100%">
       <el-table-column prop="temprature" label="温度"></el-table-column>
       <el-table-column prop="humidity" label="湿度"></el-table-column>
@@ -50,29 +50,40 @@ export default {
         begintime = this.datetime[0].getTime();
         endtime = this.datetime[1].getTime();
       } else {
-        begintime = 
+        begintime = 0;
         endtime = new Date().getTime();
       }
       this.$axios.post(`${this.$store.state.origin}/get_history_status_page`, {
         begin_timestamp: begintime,
         end_timestamp: endtime
       }).then(
-        
-      )
+        res => {
+          var times = res.data["timestamp"];
+          var temps = res.data["temperature_data"];
+          var humids = res.data["humidity_data"];
+          var data = {};
+          for(i = 0;i < times.length;i++) {
+            if (times[i] >= begintime && times[i] <= endtime) {
+              data["time"] = (new Date(times[i])).toLocaleString;
+              data["temprature"] = temps[i];
+              data["humidity"] = humids[i];
+            }
+            this.showdata.push(data);
+          }
+        }
+      ).catch((e) => {
+        console.log(e);
+      });
     },
     getWorkData() {
       this.$axios.get(`${this.$store.state.origin}/get_temperature_humidity`, {
         params: {}
       }).then(
         res => {
-          console.log(res);
-          this.newdata = res.data;
-          console.log(this.newdata);
-          this.alldata.concat(this.newdata);
-          this.newdata.forEach(e => {
-            this.tempAlert(e.temprature);
-            this.humidAlert(e.humidity);
-          });
+          console.log(JSON.parse(res.data));
+          console.log(res.data["value"]);
+          this.tempAlert(res.data[1]["value"]);
+          this.humidAlert(res.data[0]["value"]);
         }
       ).catch((e) => {
         console.log(e);
@@ -80,9 +91,7 @@ export default {
     },
     tempAlert(temp) {
       if (temp > this.tempstd) {
-        this.$axios.get(`${this.$store.state.origin}/turn_motor_on`, {
-          params: {}
-        }).then(
+        this.$axios.post(`${this.$store.state.origin}/turn_motor_on`).then(
           res => {
             this.$alert('温度超标', '警告', {
               confirmButtonText: '确定'
@@ -95,9 +104,7 @@ export default {
     },
     humidAlert(humid) {
       if (humid > this.humidstd) {
-        this.$axios.get(`${this.$store.state.origin}/turn_motor_on`, {
-          params: {}
-        }).then(
+        this.$axios.post(`${this.$store.state.origin}/turn_motor_on`).then(
           res => {
             this.$alert('湿度超标', '警告', {
               confirmButtonText: '确定'
