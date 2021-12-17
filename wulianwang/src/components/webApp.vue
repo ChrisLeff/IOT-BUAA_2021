@@ -80,8 +80,8 @@ export default {
         params: {}
       }).then(
         res => {
+          console.log(res.data);
           console.log(JSON.parse(res.data));
-          console.log(res.data["value"]);
           this.tempAlert(res.data[1]["value"]);
           this.humidAlert(res.data[0]["value"]);
         }
