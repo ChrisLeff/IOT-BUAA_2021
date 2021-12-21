@@ -1,6 +1,7 @@
 import json
 
 from flask import Flask, request
+from flask_cors import CORS
 import apis.aep_device_status
 import apis.aep_device_command
 
