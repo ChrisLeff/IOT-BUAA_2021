@@ -53,22 +53,30 @@ export default {
         begintime = 0;
         endtime = new Date().getTime();
       }
+      // console.log(begintime);
+      // console.log(endtime);
       this.$axios.post(`${this.$store.state.origin}/get_history_status_page`, {
         begin_timestamp: begintime,
         end_timestamp: endtime
       }).then(
         res => {
+          console.log(res.data);
           var times = res.data["timestamp"];
           var temps = res.data["temperature_data"];
           var humids = res.data["humidity_data"];
-          var data = {};
+          console.log(times);
+          console.log(temps);
+          console.log(humids);
+          var i;
           for(i = 0;i < times.length;i++) {
             if (times[i] >= begintime && times[i] <= endtime) {
-              data["time"] = (new Date(times[i])).toLocaleString;
+              var data = {time: "", temprature:0, humidity:0};
+              data["time"] = this.formatDate(times[i]);
               data["temprature"] = temps[i];
               data["humidity"] = humids[i];
+              console.log(data["time"]);
+              this.showdata.push(data);
             }
-            this.showdata.push(data);
           }
         }
       ).catch((e) => {
@@ -76,14 +84,11 @@ export default {
       });
     },
     getWorkData() {
-      this.$axios.get(`${this.$store.state.origin}/get_temperature_humidity`, {
-        params: {}
-      }).then(
+      this.$axios.post(`${this.$store.state.origin}/get_temperature_humidity`).then(
         res => {
-          console.log(res.data);
-          console.log(JSON.parse(res.data));
-          this.tempAlert(res.data[1]["value"]);
-          this.humidAlert(res.data[0]["value"]);
+          //console.log(res.data);
+          this.humidAlert(res.data[1]["value"]);
+          this.tempAlert(res.data[2]["value"]);
         }
       ).catch((e) => {
         console.log(e);
@@ -96,6 +101,9 @@ export default {
             this.$alert('温度超标', '警告', {
               confirmButtonText: '确定'
             });
+            setTimeout(() => {
+              this.turnoff();
+            }, 3000);
           }
         ).catch((e) => {
           console.log(e);
@@ -109,11 +117,38 @@ export default {
             this.$alert('湿度超标', '警告', {
               confirmButtonText: '确定'
             });
+            setTimeout(() => {
+              this.turnoff();
+            }, 3000);
           }
         ).catch((e) => {
           console.log(e);
         });
       }
+    },
+    turnoff() {
+      this.$axios.post(`${this.$store.state.origin}/turn_motor_off`).then(
+        res => {
+          console.log("turnoff");
+        }
+      ).catch((e) => {
+        console.log(e);
+      });
+    },
+    formatDate(value) {
+      let date = new Date(value);
+      let y = date.getFullYear();
+      let MM = date.getMonth() + 1;
+      MM = MM < 10 ? ('0' + MM) : MM;
+      let d = date.getDate();
+      d = d < 10 ? ('0' + d) : d;
+      let h = date.getHours();
+      h = h < 10 ? ('0' + h) : h;
+      let m = date.getMinutes();
+      m = m < 10 ? ('0' + m) : m;
+      let s = date.getSeconds();
+      s = s < 10 ? ('0' + s) : s;
+      return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s;
     },
     created() {
       this.selectData();
