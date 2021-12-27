@@ -60,13 +60,9 @@ export default {
         end_timestamp: endtime
       }).then(
         res => {
-          console.log(res.data);
           var times = res.data["timestamp"];
           var temps = res.data["temperature_data"];
           var humids = res.data["humidity_data"];
-          console.log(times);
-          console.log(temps);
-          console.log(humids);
           var i;
           for(i = 0;i < times.length;i++) {
             if (times[i] >= begintime && times[i] <= endtime) {
@@ -74,7 +70,6 @@ export default {
               data["time"] = this.formatDate(times[i]);
               data["temprature"] = parseFloat(temps[i]).toFixed(2);
               data["humidity"] = humids[i];
-              console.log(data["time"]);
               this.showdata.push(data);
             }
           }
@@ -95,15 +90,19 @@ export default {
       });
     },
     tempAlert(temp) {
+      //console.log(this.tempstd);
+      //console.log(temp);
       if (temp > this.tempstd) {
         this.$axios.post(`${this.$store.state.origin}/turn_motor_on`).then(
           res => {
-            this.$alert('温度超标', '警告', {
-              confirmButtonText: '确定'
+            this.$message({
+              showClose: true,
+              message: "温度超标",
+              type: "warning"
             });
             setTimeout(() => {
               this.turnoff();
-            }, 3000);
+            }, 2000);
           }
         ).catch((e) => {
           console.log(e);
@@ -111,15 +110,18 @@ export default {
       }
     },
     humidAlert(humid) {
+      //console.log(this.humidstd);
       if (humid > this.humidstd) {
         this.$axios.post(`${this.$store.state.origin}/turn_motor_on`).then(
           res => {
-            this.$alert('湿度超标', '警告', {
-              confirmButtonText: '确定'
+            this.$message({
+              showClose: true,
+              message: "湿度超标",
+              type: "warning"
             });
             setTimeout(() => {
               this.turnoff();
-            }, 3000);
+            }, 2000);
           }
         ).catch((e) => {
           console.log(e);
@@ -159,9 +161,9 @@ export default {
     this.inquirebegin();
     this.timer = window.setInterval(() => {
       setTimeout(() => {
-          this.inquirebegin()
+          this.inquirebegin();
       },0)
-    },3000)
+    },20000)
   },
   destroyed() {
     window.clearInterval(this.timer)
