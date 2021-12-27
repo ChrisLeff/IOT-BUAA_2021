@@ -76,7 +76,7 @@ export default {
       });
     },
     getWorkData() {
-      this.$axios.get(`${this.$store.state.origin}/get_temperature_humidity`, {
+      this.$axios.post(`${this.$store.state.origin}/get_temperature_humidity`, {
         params: {}
       }).then(
         res => {

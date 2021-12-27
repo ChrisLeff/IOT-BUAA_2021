@@ -27,6 +27,7 @@ def hello_world():  # put application's code here
 
 
 @app.route('/get_temperature_humidity')
+@requestMapping("/get_temperature_humidity")
 def get_temperature_humidity():
     result = apis.aep_device_status.QueryDeviceStatusList('D4RcZL9S9Sf', 'ifuketHPjc', body_base)
     postForm = json.loads(result)
