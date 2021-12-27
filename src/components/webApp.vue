@@ -72,7 +72,7 @@ export default {
             if (times[i] >= begintime && times[i] <= endtime) {
               var data = {time: "", temprature:0, humidity:0};
               data["time"] = this.formatDate(times[i]);
-              data["temprature"] = temps[i];
+              data["temprature"] = parseFloat(temps[i]).toFixed(2);
               data["humidity"] = humids[i];
               console.log(data["time"]);
               this.showdata.push(data);
@@ -150,9 +150,21 @@ export default {
       s = s < 10 ? ('0' + s) : s;
       return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s;
     },
-    created() {
+    inquirebegin() {
       this.selectData();
+      this.getWorkData();
     }
+  },
+  created() {
+    this.inquirebegin();
+    this.timer = window.setInterval(() => {
+      setTimeout(() => {
+          this.inquirebegin()
+      },0)
+    },3000)
+  },
+  destroyed() {
+    window.clearInterval(this.timer)
   }
 }
 </script>
