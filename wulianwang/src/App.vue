@@ -11,6 +11,7 @@
 
 <script>
 import webApp from "@/components/webApp"
+import  "babel-polyfill"
 export default {
   name: 'App',
   components: {

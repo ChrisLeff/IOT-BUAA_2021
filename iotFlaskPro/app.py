@@ -21,10 +21,6 @@ body_motor_control = \
     '"level": 1}'
 
 
-@app.route('/')
-def hello_world():  # put application's code here
-    return 'Hello World!'
-
 
 @app.route('/get_temperature_humidity', methods=['POST', 'GET'])
 def get_temperature_humidity():
@@ -38,12 +34,11 @@ def get_temperature_humidity():
 def get_history_status_page():
     if request.method == 'POST':
         print(request.form)
-        # begin_timestamp = request.form.get('begin_timestamp')
-        # end_timestamp = request.form.get('end_timestamp')
-        # begin_timestamp = input()
-        # end_timestamp = input()
+
         begin_timestamp = str(1638954000000)
         end_timestamp =   str(1638954600000)
+        # 这里是对时间戳进行一个初始化
+        # 下面是对于相关参数的设置，具体的参数是从CTWing网站上对应下来的
         body_history = '{"productId": "15100261", ' \
                        '"deviceId":"16749f24ae0e4d118f93b9d9eb2317b5", ' \
                        '"begin_timestamp":"' + begin_timestamp + '", ' \
@@ -81,5 +76,3 @@ def turn_motor_off():
     return result
 
 
-if __name__ == '__main__':
-    app.run()
