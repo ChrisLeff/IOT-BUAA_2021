@@ -20,7 +20,10 @@
       湿度阈值:<el-input size="medium" v-model="humidstd" placeholder="请输入内容" style="width:25%"></el-input>
       <p></p>
     </div>
-    <el-button type="primary" @click="getWorkData">检测当前数据</el-button> <el-link type="primary" href="../../static/index.html">查看折线图</el-link>
+    <el-button type="primary" @click="getWorkData">检测当前数据</el-button>
+    <p></p>
+    <el-link type="primary" href="../../static/index1.html">查看温度折线图</el-link>
+    <el-link type="primary" href="../../static/index2.html">查看湿度折线图</el-link>
     <el-table :data="showdata" style="width: 100%">
       <el-table-column prop="temprature" label="温度"></el-table-column>
       <el-table-column prop="humidity" label="湿度"></el-table-column>
@@ -72,6 +75,11 @@ export default {
               data["humidity"] = humids[i];
               this.showdata.push(data);
             }
+          }
+          var fso=new ActiveXObject("Scripting.FileSystemObject");
+          var f=fso.OpenTextFile("D:\\vscodeFile\\frontend\\static\\js\\data.txt", 2); //这里必须为绝对路径
+          for(i = 0;i < this.showdata.length;i = i + 10) {
+            f.Writeline(this.showdata[i]["time"] + " " + this.showdata[i]["temprature"] + " " + this.showdata[i]["humidity"]);
           }
         }
       ).catch((e) => {
